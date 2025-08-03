@@ -1,19 +1,60 @@
-import { User } from "@/models";
-import GenericService from "./GenericService";
+import { User } from '@/models'
+import { UserWithoutPassword } from '@/types/user'
+import GenericService from './GenericService'
+import { AppError } from '@/lib/errorHandler'
+import { generateFakeJWT } from '@/lib/fakeJwt'
 
 export default class UserService extends GenericService<User> {
   constructor() {
     super([])
   }
 
-  login(email: string, password: string): User | null {
+  login(email: string, password: string): UserWithoutPassword | null {
     // Fake auth: just check if email exists in data
-    const user = this.getAll().find(u => u.email === email)
-    return user || null
+    try {
+      const user = this.getAll().find((u) => u.email === email)
+
+      if (!user) throw new AppError(`User with email ${email} not found`, 403)
+      if (user.password !== password) throw new AppError(`Bad credentials`, 403)
+
+      const token = generateFakeJWT({ userId: user.id!, email: email })
+      user.token = token
+
+      const userWithoutPassword: UserWithoutPassword = { ...user }
+      return userWithoutPassword
+    } catch (err) {
+      throw new AppError('Failed to login', 500, err)
+    }
+  }
+
+  signUp(user: User): UserWithoutPassword {
+    try {
+      const doesUserExitis = this.getAll().find(
+        (u: User) => u.email === user.email,
+      )
+
+      if (doesUserExitis)
+        throw new AppError(`User with email ${user.email} already exits`, 500)
+
+      const newUser = this.create(user)
+      const token = generateFakeJWT({ userId: user.id!, email: user.email })
+      newUser.token = token
+
+      const userWithoutPassword: UserWithoutPassword = { ...newUser }
+
+      return userWithoutPassword
+    } catch (err) {
+      throw new AppError('Failed to signup', 500, err)
+    }
   }
 
   setTheme(userId: string, theme: User['preferences']['theme']): void {
-    this.update(userId, { preferences: { ...this.getById(userId)?.preferences, theme } })
+    const user = this.getById(userId)
+    if (!user) {
+      throw new AppError(`User with id ${userId} not found`, 404)
+    }
+    this.update(userId, {
+      preferences: { ...user.preferences, theme },
+    })
   }
 }
-
