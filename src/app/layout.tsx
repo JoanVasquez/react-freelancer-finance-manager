@@ -1,11 +1,6 @@
-import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
-
-import { persistor, store } from '@/features'
-import { Provider } from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
-import ErrorBoundary from '@/components/ErrorBoundary'
+import type { Metadata } from 'next'
+import ProvidersWrapper from './ProvidersWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,13 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ErrorBoundary>
-          <Provider store={store}>
-            <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
-              {children}
-            </PersistGate>
-          </Provider>
-        </ErrorBoundary>
+        <ProvidersWrapper>{children}</ProvidersWrapper>
       </body>
     </html>
   )

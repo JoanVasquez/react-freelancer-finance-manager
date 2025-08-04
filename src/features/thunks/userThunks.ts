@@ -3,18 +3,37 @@ import UserService from '@/services/UserService'
 import { UserWithoutPassword } from '@/types/user'
 import { User } from '@/models'
 import { handleError } from '@/lib/errorHandler'
+import { generateFakeJWT } from '@/lib/fakeJwt'
 
 const userService = new UserService()
 
 export const loginThunk = createAsyncThunk(
   'user/login',
   async (
-    { email, password }: { email: string; password: string },
+    {
+      email,
+      password,
+      rememberMe,
+    }: { email: string; password: string; rememberMe?: boolean },
     { rejectWithValue },
   ) => {
     try {
       const user = userService.login(email, password)
       if (!user) throw new Error('Invalid credentials')
+
+      if (typeof document !== 'undefined') {
+        document.cookie = `token=${user.token}; path=/; max-age=3600`
+
+        if (rememberMe) {
+          const refreshToken = generateFakeJWT(
+            { userId: user.id!, email: user.email },
+            60 * 60 * 24 * 7,
+          )
+
+          document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${60 * 60 * 24 * 7};`
+        }
+      }
+
       return user
     } catch (err) {
       rejectWithValue(handleError(err))
@@ -48,6 +67,7 @@ export const setThemeThunk = createAsyncThunk(
     theme: UserWithoutPassword['preferences']['theme']
   }) => {
     userService.setTheme(userId, theme)
-    return userService.getById(userId)
+    const updatedUser = userService.getById(userId)
+    return updatedUser as UserWithoutPassword
   },
 )

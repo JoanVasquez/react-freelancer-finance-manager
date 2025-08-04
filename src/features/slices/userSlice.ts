@@ -46,7 +46,7 @@ const userSlice = createSlice({
         state.loading = false
         state.currentUser = action.payload as UserWithoutPassword
       })
-      .addCase(loginThunk.rejected, (state, action) => {
+      .addCase(signUpThunk.rejected, (state, action) => {
         state.loading = false
         state.error = (action.payload as AppError)?.message || 'Unknown error'
       })

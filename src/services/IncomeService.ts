@@ -1,5 +1,5 @@
 import { AppError } from '@/lib/errorHandler'
-import { Income e } from '@/models'
+import { Income } from '@/models'
 import GenericService from './GenericService'
 
 export default class IncomeService extends GenericService<Income> {
