@@ -47,6 +47,10 @@ export const signUpThunk = createAsyncThunk(
   async (user: UserRegistration, { rejectWithValue }) => {
     try {
       const newUser: UserWithoutPassword = userService.signUp(user)
+
+      if (typeof document !== 'undefined') {
+        document.cookie = `token=${newUser.token}; path=/; max-age=3600`
+      }
       return newUser
     } catch (err) {
       rejectWithValue(handleError(err))

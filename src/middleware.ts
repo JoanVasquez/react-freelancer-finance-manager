@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server'
 import { validateFakeJWT, refreshFakeJWT } from './lib/fakeJwt'
 
 const protectedRoutes = ['/dashboard', '/invoices', '/expenses', '/taxes']
+const authPages = ['/login', '/signup', '/forgot-password']
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
@@ -10,28 +11,28 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   const isProtected = protectedRoutes.some((route) => path.startsWith(route))
+  const isAuthPage = authPages.includes(path)
 
+  // 🔹 Si es página de auth y hay token → ir al dashboard
+  if (isAuthPage && token && validateFakeJWT(token)) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // 🔹 Si es página protegida → validar token
   if (isProtected) {
-    // No token at all → go to login
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Token exists → validate
     if (!validateFakeJWT(token)) {
-      // Try refresh if refresh token exists
       if (refreshToken && validateFakeJWT(refreshToken)) {
         const newToken = refreshFakeJWT(refreshToken)
         if (newToken) {
           const response = NextResponse.next()
-          response.cookies.set('token', newToken, {
-            path: '/',
-            httpOnly: false,
-          })
+          response.cookies.set('token', newToken, { path: '/', httpOnly: false })
           return response
         }
       }
-      // No valid refresh token → redirect
       return NextResponse.redirect(new URL('/login', request.url))
     }
   }
@@ -41,9 +42,13 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/login',
+    '/signup',
+    '/forgot-password',
     '/dashboard/:path*',
     '/invoices/:path*',
     '/expenses/:path*',
     '/taxes/:path*',
   ],
 }
+
