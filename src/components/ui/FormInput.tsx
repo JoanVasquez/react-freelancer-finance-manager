@@ -7,6 +7,7 @@ interface FormInputProps {
   value: string
   placeholder?: string
   onChange: (value: string) => void
+  error?: string
 }
 
 export default function FormInput({
@@ -16,10 +17,11 @@ export default function FormInput({
   value,
   placeholder,
   onChange,
+  error,
 }: FormInputProps) {
   return (
-    <div className="flex flex-col space-y-1">
-      <label htmlFor={id} className="text-sm font-medium">
+    <div className={`form-input ${error ? 'form-input--error' : ''}`}>
+      <label htmlFor={id} className="form-input__label">
         {label}
       </label>
       <input
@@ -28,8 +30,9 @@ export default function FormInput({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+        className="form-input__field"
       />
+      {error && <span className="form-input__error">{error}</span>}
     </div>
   )
 }

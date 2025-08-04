@@ -1,0 +1,52 @@
+@use '../base/variables' as v;
+
+.auth-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: v.$color-gray-100;
+  padding: v.$spacing-md;
+
+  &__card {
+    background-color: v.$color-white;
+    border-radius: v.$border-radius-lg;
+    padding: v.$spacing-xl; // Cambiaremos esto
+    padding-left: v.$spacing-xl;
+    padding-right: v.$spacing-xl;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .login__links {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+
+  a {
+    color: v.$color-primary;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: darken(v.$color-primary, 10%);
+    }
+  }
+}
+
+  body.dark-theme & {
+    background-color: v.$color-gray-900;
+
+    &__card {
+      background-color: v.$color-gray-800;
+    }
+  }
+}
+

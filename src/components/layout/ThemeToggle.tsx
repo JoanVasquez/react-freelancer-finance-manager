@@ -23,7 +23,8 @@ export default function ThemeToggle() {
           }),
         )
       }
-      className="w-full bg-gray-700 p-2 rounded"
+      variant="theme"
+      className="w-full"
       label={`Toggle ${currentTheme === 'light' ? 'Dark' : 'Light'}`}
     />
   )

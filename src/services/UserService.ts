@@ -3,6 +3,7 @@ import { UserWithoutPassword } from '@/types/user'
 import GenericService from './GenericService'
 import { AppError } from '@/lib/errorHandler'
 import { generateFakeJWT } from '@/lib/fakeJwt'
+import { UserRegistration } from '@/types/signup'
 
 export default class UserService extends GenericService<User> {
   constructor() {
@@ -27,7 +28,7 @@ export default class UserService extends GenericService<User> {
     }
   }
 
-  signUp(user: User): UserWithoutPassword {
+  signUp(user: UserRegistration): UserWithoutPassword {
     try {
       const doesUserExitis = this.getAll().find(
         (u: User) => u.email === user.email,
@@ -36,7 +37,11 @@ export default class UserService extends GenericService<User> {
       if (doesUserExitis)
         throw new AppError(`User with email ${user.email} already exits`, 500)
 
-      const newUser = this.create(user)
+      const newUser = this.create({
+        ...user,
+        token: '',
+        preferences: { theme: 'light', currency: 'USD' },
+      })
       const token = generateFakeJWT({ userId: user.id!, email: user.email })
       newUser.token = token
 

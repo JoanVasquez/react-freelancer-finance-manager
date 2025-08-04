@@ -4,6 +4,7 @@ import { UserWithoutPassword } from '@/types/user'
 import { User } from '@/models'
 import { handleError } from '@/lib/errorHandler'
 import { generateFakeJWT } from '@/lib/fakeJwt'
+import { UserRegistration } from '@/types/signup'
 
 const userService = new UserService()
 
@@ -43,7 +44,7 @@ export const loginThunk = createAsyncThunk(
 
 export const signUpThunk = createAsyncThunk(
   'user/signup',
-  async (user: User, { rejectWithValue }) => {
+  async (user: UserRegistration, { rejectWithValue }) => {
     try {
       const newUser: UserWithoutPassword = userService.signUp(user)
       return newUser

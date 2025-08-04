@@ -3,17 +3,18 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
-import { loginThunk } from '@/features/thunks/userThunks'
+import { signUpThunk } from '@/features/thunks/userThunks'
 import { RootState, AppDispatch } from '@/features'
 import AuthLayout from '@/components/layout/AuthLayout'
 import GenericButton from '@/components/ui/GenericButton'
 import FormInput from '@/components/ui/FormInput'
 import Alert from '@/components/ui/Alert'
 import FormCheckbox from '@/components/ui/FormChechbox'
-import { validateInputs } from '@/utils/validation'
+import { validateInputs, ValidationSchema } from '@/utils/validation'
 import Link from 'next/link'
+import { UserRegistration } from '@/types/signup'
 
-export default function LoginPage() {
+export default function SignupPage() {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const { loading, error } = useSelector((state: RootState) => state.user)
@@ -21,14 +22,16 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    rememberMe: false,
+    confirmPassword: '',
+    agreeTerms: false,
   })
 
   const [formErrors, setFormErrors] = useState<
     Partial<Record<keyof typeof formData, string>>
   >({})
 
-  const schema = {
+  // ✅ Tipado correcto del schema
+  const schema: ValidationSchema<typeof formData> = {
     email: {
       required: true,
       pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -37,17 +40,32 @@ export default function LoginPage() {
       required: true,
       minLength: 6,
     },
-    rememberMe: {}, // No validation for checkbox
+    confirmPassword: {
+      required: true,
+      custom: (val: string) =>
+        val !== formData.password ? 'Passwords do not match' : null,
+    },
+    agreeTerms: {
+      required: true,
+      custom: (val: boolean) => (!val ? 'You must agree to the terms' : null),
+    },
   }
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     const { valid, errors } = validateInputs(formData, schema)
     setFormErrors(errors)
 
     if (!valid) return
 
-    const result = await dispatch(loginThunk(formData))
-    if (loginThunk.fulfilled.match(result)) {
+    const newUser: UserRegistration = {
+      id: crypto.randomUUID(),
+      name: '', // Puedes añadir campo de nombre en el formulario si lo necesitas
+      email: formData.email,
+      password: formData.password,
+    }
+
+    const result = await dispatch(signUpThunk(newUser))
+    if (signUpThunk.fulfilled.match(result)) {
       router.push('/dashboard')
     }
   }
@@ -65,11 +83,17 @@ export default function LoginPage() {
       type: 'password',
       placeholder: 'Enter your password',
     },
-  ]
+    {
+      id: 'confirmPassword',
+      label: 'Confirm Password',
+      type: 'password',
+      placeholder: 'Confirm your password',
+    },
+  ] as const
 
   return (
     <AuthLayout>
-      <h1 className="login__title">Login</h1>
+      <h1 className="login__title">Sign Up</h1>
 
       {error && <Alert variant="error" message={error} />}
 
@@ -81,28 +105,29 @@ export default function LoginPage() {
             label={field.label}
             type={field.type}
             placeholder={field.placeholder}
-            value={formData[field.id as keyof typeof formData] as string}
+            value={formData[field.id]}
             onChange={(val) =>
               setFormData((prev) => ({ ...prev, [field.id]: val }))
             }
-            error={formErrors[field.id as keyof typeof formErrors]}
+            error={formErrors[field.id]}
           />
         ))}
 
-        <div className="login__remember">
-          <FormCheckbox
-            id="rememberMe"
-            label="Remember Me"
-            checked={formData.rememberMe}
-            onChange={(checked) =>
-              setFormData((prev) => ({ ...prev, rememberMe: checked }))
-            }
-          />
-        </div>
+        <FormCheckbox
+          id="agreeTerms"
+          label="I agree to the Terms and Conditions"
+          checked={formData.agreeTerms}
+          onChange={(checked) =>
+            setFormData((prev) => ({ ...prev, agreeTerms: checked }))
+          }
+        />
+        {formErrors.agreeTerms && (
+          <Alert variant="error" message={formErrors.agreeTerms} />
+        )}
 
         <GenericButton
-          label={loading ? 'Logging in...' : 'Login'}
-          onClick={handleLogin}
+          label={loading ? 'Signing up...' : 'Sign Up'}
+          onClick={handleSignup}
           variant="primary"
           className="login__button"
           disabled={loading}
@@ -110,8 +135,7 @@ export default function LoginPage() {
       </div>
 
       <div className="login__links">
-        <Link href="/signup">Create an account</Link>
-        <Link href="/forgot-password">Forgot Password?</Link>
+        <Link href="/login">Already have an account? Login</Link>
       </div>
     </AuthLayout>
   )

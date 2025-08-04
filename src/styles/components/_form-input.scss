@@ -1,0 +1,64 @@
+@use '../base/variables' as v;
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-xs;
+
+  &__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: v.$color-gray-900;
+  }
+
+  &__field {
+    padding: v.$spacing-sm v.$spacing-md;
+    border: 1px solid v.$color-gray-300;
+    border-radius: v.$border-radius-md;
+    background-color: v.$color-white;
+    color: v.$color-gray-900;
+    font-size: v.$font-size-base;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: v.$color-primary;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    &::placeholder {
+      color: v.$color-gray-500;
+      font-size: 0.875rem;
+    }
+  }
+
+  &__error {
+    font-size: 0.75rem;
+    color: v.$color-error;
+    margin-top: 0.25rem;
+  }
+
+  &--error {
+    .form-input__field {
+      border-color: v.$color-error;
+      box-shadow: 0 0 0 2px rgba(185, 28, 28, 0.2);
+    }
+  }
+
+  body.dark-theme & {
+    &__label {
+      color: v.$color-gray-100;
+    }
+
+    &__field {
+      background-color: v.$color-gray-900;
+      color: v.$color-gray-100;
+      border-color: v.$color-gray-700;
+
+      &::placeholder {
+        color: v.$color-gray-500;
+      }
+    }
+  }
+}
+

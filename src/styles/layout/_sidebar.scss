@@ -1,0 +1,49 @@
+@use '../base/variables' as v;
+
+.sidebar {
+  width: 16rem; // equivalente a w-64
+  background-color: v.$color-gray-800;
+  color: v.$color-white;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    padding: v.$spacing-md;
+    font-size: 1.125rem;
+    font-weight: bold;
+    border-bottom: 1px solid v.$color-gray-700;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    padding: v.$spacing-md;
+    gap: v.$spacing-sm;
+
+    a {
+      color: v.$color-gray-100;
+      text-decoration: none;
+      padding: v.$spacing-xs v.$spacing-sm;
+      border-radius: v.$border-radius-sm;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: v.$color-gray-700;
+      }
+
+      &.active {
+        background-color: v.$color-primary;
+        color: v.$color-white;
+      }
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    padding: v.$spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-sm;
+  }
+}
+

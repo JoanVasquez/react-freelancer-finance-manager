@@ -1,0 +1,58 @@
+// 🎨 Colores principales
+$color-primary: #2563eb;    // Azul primario
+$color-primary-light: #60a5fa;
+$color-primary-dark: #1e40af;
+
+$color-secondary: #9333ea;  // Púrpura
+$color-secondary-light: #c084fc;
+$color-secondary-dark: #6b21a8;
+
+// ⚠️ Colores de estado
+$color-success: #16a34a;
+$color-success-bg: #dcfce7;
+$color-success-border: #86efac;
+
+$color-warning: #ca8a04;
+$color-warning-bg: #fef9c3;
+$color-warning-border: #fde047;
+
+$color-error: #b91c1c;
+$color-error-bg: #fee2e2;
+$color-error-border: #fca5a5;
+
+$color-info: #0369a1;
+$color-info-bg: #e0f2fe;
+$color-info-border: #7dd3fc;
+
+// 🖤 Neutrales
+$color-black: #000000;
+$color-white: #ffffff;
+$color-gray-100: #f3f4f6;
+$color-gray-300: #d1d5db;
+$color-gray-500: #6b7280;
+$color-gray-700: #374151;
+$color-gray-900: #111827;
+$color-gray-800: #1f2937;
+
+// 🔤 Tipografía
+$font-family-base: 'Inter', sans-serif;
+$font-size-base: 16px;
+
+// 📏 Espaciados
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+
+// 🔲 Bordes
+$border-radius-sm: 4px;
+$border-radius-md: 6px;
+$border-radius-lg: 10px;
+
+// 🌑 Sombra
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+

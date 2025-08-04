@@ -1,0 +1,42 @@
+@use '../base/variables' as v;
+
+.alert {
+  padding: v.$spacing-sm v.$spacing-md;
+  border-radius: v.$border-radius-md;
+  margin-bottom: v.$spacing-md;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+  font-family: v.$font-family-base;
+  box-shadow: v.$shadow-sm;
+
+  &__title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: v.$spacing-xs;
+  }
+
+  &--info {
+    background-color: v.$color-info-bg;
+    color: v.$color-info;
+    border-color: v.$color-info-border;
+  }
+
+  &--success {
+    background-color: v.$color-success-bg;
+    color: v.$color-success;
+    border-color: v.$color-success-border;
+  }
+
+  &--warning {
+    background-color: v.$color-warning-bg;
+    color: v.$color-warning;
+    border-color: v.$color-warning-border;
+  }
+
+  &--error {
+    background-color: v.$color-error-bg;
+    color: v.$color-error;
+    border-color: v.$color-error-border;
+  }
+}
+

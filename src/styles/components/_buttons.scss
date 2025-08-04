@@ -1,0 +1,79 @@
+@use '../base/variables' as v;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: v.$spacing-sm v.$spacing-md;
+  border-radius: v.$border-radius-md;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  border: none;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: v.$shadow-sm;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &--primary {
+    background-color: v.$color-primary;
+    color: v.$color-white;
+
+    &:hover {
+      background-color: v.$color-primary-dark;
+    }
+  }
+
+  &--secondary {
+    background-color: v.$color-secondary;
+    color: v.$color-white;
+
+    &:hover {
+      background-color: v.$color-secondary-dark;
+    }
+  }
+
+  &--outline {
+    background-color: transparent;
+    color: v.$color-primary;
+    border: 1px solid v.$color-primary;
+
+    &:hover {
+      background-color: rgba(37, 99, 235, 0.1);
+    }
+  }
+
+  &--danger {
+    background-color: v.$color-error;
+    color: v.$color-white;
+
+    &:hover {
+      background-color: darken(v.$color-error, 5%);
+    }
+  }
+
+  &:disabled {
+    background-color: v.$color-gray-300;
+    color: v.$color-gray-500;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  &--theme {
+    background-color: v.$color-gray-700;
+    color: v.$color-white;
+
+    &:hover {
+      background-color: v.$color-gray-500;
+    }
+  }
+}
+
