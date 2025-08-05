@@ -1,1 +1,28 @@
+@use '../base/variables' as v;
+
+.navbar {
+  background-color: v.$color-white;
+  border-bottom: 1px solid v.$color-gray-300;
+  padding: v.$spacing-md v.$spacing-lg;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: v.$color-gray-900;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-md;
+
+    span {
+      color: v.$color-gray-700;
+    }
+  }
+}
 

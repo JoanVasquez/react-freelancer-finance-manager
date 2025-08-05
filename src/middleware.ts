@@ -13,6 +13,14 @@ export function middleware(request: NextRequest) {
   const isProtected = protectedRoutes.some((route) => path.startsWith(route))
   const isAuthPage = authPages.includes(path)
 
+  if (path === '/') {
+    if (token && validateFakeJWT(token)) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    } else {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
+
   // 🔹 Si es página de auth y hay token → ir al dashboard
   if (isAuthPage && token && validateFakeJWT(token)) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
@@ -29,7 +37,10 @@ export function middleware(request: NextRequest) {
         const newToken = refreshFakeJWT(refreshToken)
         if (newToken) {
           const response = NextResponse.next()
-          response.cookies.set('token', newToken, { path: '/', httpOnly: false })
+          response.cookies.set('token', newToken, {
+            path: '/',
+            httpOnly: false,
+          })
           return response
         }
       }
@@ -42,6 +53,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
     '/login',
     '/signup',
     '/forgot-password',
@@ -51,4 +63,3 @@ export const config = {
     '/taxes/:path*',
   ],
 }
-

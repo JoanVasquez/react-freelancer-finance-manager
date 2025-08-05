@@ -1,7 +1,11 @@
 @use '../base/variables' as v;
 
 .sidebar {
-  width: 16rem; // equivalente a w-64
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px; // equivalente a w-64
   background-color: v.$color-gray-800;
   color: v.$color-white;
   display: flex;
