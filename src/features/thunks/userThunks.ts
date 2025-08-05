@@ -59,6 +59,7 @@ export const signUpThunk = createAsyncThunk(
 )
 
 export const logoutThunk = createAsyncThunk('user/logout', async () => {
+  document.cookie = `token=; path=/;`
   return null
 })
 

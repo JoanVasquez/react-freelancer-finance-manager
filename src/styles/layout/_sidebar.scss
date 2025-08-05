@@ -1,3 +1,4 @@
+// src/styles/layout/_sidebar.scss
 @use '../base/variables' as v;
 
 .sidebar {
@@ -5,7 +6,7 @@
   top: 0;
   left: 0;
   height: 100vh;
-  width: 250px; // equivalente a w-64
+  width: 250px;
   background-color: v.$color-gray-800;
   color: v.$color-white;
   display: flex;
@@ -29,7 +30,7 @@
       text-decoration: none;
       padding: v.$spacing-xs v.$spacing-sm;
       border-radius: v.$border-radius-sm;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease;
 
       &:hover {
         background-color: v.$color-gray-700;
@@ -38,6 +39,7 @@
       &.active {
         background-color: v.$color-primary;
         color: v.$color-white;
+        font-weight: bold;
       }
     }
   }

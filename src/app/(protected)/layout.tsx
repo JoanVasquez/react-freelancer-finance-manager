@@ -1,24 +1,23 @@
+// src/app/(protected)/layout.tsx
 'use client'
 
 import Sidebar from '@/components/layout/Sidebar'
 import Navbar from '@/components/layout/Navbar'
 
-export default function DashboardLayout({
+export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const sidebarWidth = 250 // Debe coincidir con el CSS
+  const sidebarWidth = 250 // Debe coincidir con Sidebar.scss
 
   return (
     <div style={{ display: 'flex' }}>
-      {/* Sidebar fijo */}
       <Sidebar />
 
-      {/* Contenido alineado */}
       <div
         style={{
-          marginLeft: `${sidebarWidth}px`, // Compensa el ancho del Sidebar
+          marginLeft: `${sidebarWidth}px`,
           flex: 1,
           display: 'flex',
           flexDirection: 'column',

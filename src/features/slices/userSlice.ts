@@ -56,10 +56,8 @@ const userSlice = createSlice({
         state.loading = true
       })
       .addCase(logoutThunk.fulfilled, (state) => {
+        state.loading = false
         state.currentUser = null
-      })
-      .addCase(logoutThunk.rejected, (state, action) => {
-        state.error = (action.payload as AppError)?.message || 'Unknown error'
       })
 
       // Theme
