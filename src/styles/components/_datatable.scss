@@ -1,0 +1,103 @@
+@use '@/styles/base/variables' as v;
+
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  background: v.$color-white;
+  border-radius: v.$border-radius-md;
+  overflow: hidden;
+
+  th, td {
+    padding: v.$spacing-sm;
+    text-align: left;
+    border-bottom: 1px solid v.$color-gray-300;
+    cursor: pointer;
+  }
+
+  th {
+    background: v.$color-gray-100;
+    &.sorted-asc::after {
+      content: ' ▲';
+    }
+    &.sorted-desc::after {
+      content: ' ▼';
+    }
+  }
+
+  tr:hover {
+    background: v.$color-gray-50;
+  }
+}
+
+/* 🔍 Search Input */
+.datatable__search {
+  margin-bottom: v.$spacing-sm;
+  padding: v.$spacing-xs v.$spacing-sm;
+  border: 1px solid v.$color-gray-300;
+  border-radius: v.$border-radius-sm;
+  width: 200px;
+}
+
+/* 📌 Pagination */
+/* 📌 Pagination */
+.datatable__pagination {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-sm;
+  margin-top: v.$spacing-md;
+  padding: v.$spacing-sm;
+  background: v.$color-gray-50;
+  border-radius: v.$border-radius-md;
+  box-shadow: v.$shadow-sm;
+
+  span {
+    font-size: 0.9rem;
+    color: v.$color-gray-700;
+    font-weight: 500;
+  }
+
+  .generic-button {
+    padding: 4px 10px;
+    border-radius: v.$border-radius-sm;
+    background: v.$color-white;
+    border: 1px solid v.$color-gray-300;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: v.$color-gray-100;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+
+/* 🎯 Status Badges */
+.status {
+  padding: 2px 8px;
+  border-radius: v.$border-radius-sm;
+  font-weight: bold;
+  display: inline-block;
+
+  &--sent {
+    background: v.$color-info-bg;
+    color: v.$color-info;
+  }
+  &--paid {
+    background: v.$color-success-bg;
+    color: v.$color-success;
+  }
+  &--overdue {
+    background: v.$color-error-bg;
+    color: v.$color-error;
+  }
+  &--draft {
+    background: v.$color-warning-bg;
+    color: v.$color-warning;
+  }
+}
+
