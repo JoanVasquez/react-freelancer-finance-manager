@@ -1,0 +1,35 @@
+@use '@/styles/base/variables' as v;
+
+.form-select {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-xs;
+
+  &__label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: v.$color-gray-700;
+  }
+
+  &__field {
+    padding: v.$spacing-xs;
+    border-radius: v.$border-radius-sm;
+    border: 1px solid v.$color-gray-300;
+    background: v.$color-white;
+    cursor: pointer;
+
+    &:hover {
+      border-color: v.$color-gray-400;
+    }
+  }
+
+  &--error &__field {
+    border-color: v.$color-error;
+  }
+
+  &__error {
+    font-size: 0.8rem;
+    color: v.$color-error;
+  }
+}
+

@@ -1,5 +1,14 @@
 @use '@/styles/base/variables' as v;
 
+.datatable-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.datatable {
+  min-width: 800px;
+}
+
 .datatable {
   width: 100%;
   border-collapse: collapse;
