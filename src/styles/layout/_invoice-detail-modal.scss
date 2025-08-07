@@ -1,0 +1,50 @@
+.invoice-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__section {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1rem;
+
+    h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .badge {
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+
+      &--paid { background-color: #c8e6c9; color: #256029; }
+      &--pending { background-color: #fff9c4; color: #a67c00; }
+      &--overdue { background-color: #ffcdd2; color: #c62828; }
+    }
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+  }
+
+  &__total {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+

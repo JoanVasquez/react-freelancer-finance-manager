@@ -6,12 +6,25 @@ import { Invoice } from '@/models/Invoice'
 import DataTable, { Column } from '@/components/ui/DataTable'
 import CreateInvoiceModal from '@/components/invoices/CreateInvoiceModal'
 import GenericButton from '@/components/ui/GenericButton'
+import { useDispatch } from 'react-redux'
+import { AppDispatch, RootState } from '@/features'
+import { addInvoiceThunk } from '@/features/thunks/financeThunks'
+import { useSelector } from 'react-redux'
+import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal'
 
 export default function InvoicesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showAllColumns, setShowAllColumns] = useState(false)
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
+  const [showDetailModal, setShowDetailModal] = useState(false)
 
-  const allColumns: Column<Invoice>[] = [
+  const { invoices, loading, error } = useSelector(
+    (state: RootState) => state.finance,
+  )
+
+  const dispatch = useDispatch<AppDispatch>()
+
+  const allColumns: Column<Invoice & { actions: string }>[] = [
     { key: 'id', label: 'ID' },
     { key: 'clientName', label: 'Client' },
     { key: 'clientEmail', label: 'Email' },
@@ -32,16 +45,6 @@ export default function InvoicesPage() {
         value !== undefined ? `${((value as number) * 100).toFixed(0)}%` : '—',
     },
     {
-      key: 'items',
-      label: 'Items',
-      render: (value) => {
-        const items = value as Invoice['items']
-        return Array.isArray(items)
-          ? `${items.length} item${items.length > 1 ? 's' : ''}`
-          : '—'
-      },
-    },
-    {
       key: 'total',
       label: 'Amount',
       render: (value) => `$${(value as number).toFixed(2)}`,
@@ -55,9 +58,27 @@ export default function InvoicesPage() {
         </span>
       ),
     },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (_, row) => (
+        <GenericButton
+          label="Detail"
+          variant="secondary"
+          onClick={() => {
+            setSelectedInvoice(row)
+            setShowDetailModal(true)
+          }}
+        />
+      ),
+    },
   ]
 
   const defaultColumns = allColumns.slice(0, 5)
+
+  const handlerSubmit = async (invoice: Invoice) => {
+    dispatch(addInvoiceThunk(invoice))
+  }
 
   return (
     <div className="invoices">
@@ -82,16 +103,20 @@ export default function InvoicesPage() {
       <div className="datatable-container">
         <DataTable
           columns={showAllColumns ? allColumns : defaultColumns}
-          data={mockInvoices}
+          data={[...invoices, ...mockInvoices]}
         />
       </div>
 
       <CreateInvoiceModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onCreate={(newInvoice: Invoice) => {
-          // TODO: lógica para añadir factura
-        }}
+        onCreate={(newInvoice: Invoice) => handlerSubmit(newInvoice)}
+      />
+
+      <InvoiceDetailModal
+        isOpen={showDetailModal}
+        onClose={() => setShowDetailModal(false)}
+        invoice={selectedInvoice}
       />
     </div>
   )
