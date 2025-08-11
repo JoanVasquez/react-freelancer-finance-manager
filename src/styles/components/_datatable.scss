@@ -5,8 +5,10 @@
   max-width: 100%;
 }
 
-.datatable {
-  min-width: 800px;
+.actions-datatable {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .datatable {
@@ -37,6 +39,15 @@
     background: v.$color-gray-50;
   }
 }
+
+.datatable-wrapper.datatable--compact {
+  .form-input { display: none; }
+  .datatable {
+    th, td { padding: 6px 8px; font-size: 0.9rem; }
+  }
+}
+.datatable th.not-sortable { cursor: default; }
+
 
 /* 🔍 Search Input */
 .datatable__search {

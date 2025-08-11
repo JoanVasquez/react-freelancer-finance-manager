@@ -5,26 +5,35 @@ import Pagination from '@/components/ui/Pagination'
 import FormInput from '@/components/ui/FormInput' // 👈 Importar componente reutilizable
 
 export type Column<T> = {
+  id?: string
   key: keyof T
   label: string
   render?: (value: T[keyof T], row: T) => React.ReactNode
+  sortable?: boolean
 }
 
 export default function DataTable<T>({
   columns,
   data,
   itemsPerPage = 5,
+  showSearch = true,
+  showPagination = true,
+  compact = false,
+  className = ''
 }: {
   columns: Column<T>[]
   data: T[]
-  itemsPerPage?: number
+  itemsPerPage?: number,
+  showSearch?: boolean
+  showPagination?: boolean
+  compact?: boolean
+  className?: string
 }) {
   const [sortKey, setSortKey] = useState<keyof T | null>(null)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [search, setSearch] = useState('')
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  // 🔍 Búsqueda en tiempo real
   const filteredData = useMemo(() => {
     if (!search.trim()) return data
     return data.filter((row) =>
@@ -35,7 +44,6 @@ export default function DataTable<T>({
     )
   }, [search, data, columns])
 
-  // 🔽 Ordenamiento
   const sortedData = useMemo(() => {
     if (!sortKey) return filteredData
     return [...filteredData].sort((a, b) => {
@@ -47,7 +55,6 @@ export default function DataTable<T>({
     })
   }, [filteredData, sortKey, sortOrder])
 
-  // 📄 Paginación
   const totalPages = Math.ceil(sortedData.length / itemsPerPage)
   const paginatedData = sortedData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -55,6 +62,9 @@ export default function DataTable<T>({
   )
 
   const handleSort = (key: keyof T) => {
+    const col = columns.find(c => c.key === key);
+    if (col && col.sortable === false) return;
+
     if (sortKey === key) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
     } else {
@@ -64,26 +74,24 @@ export default function DataTable<T>({
   }
 
   return (
-    <div>
-      {/* 🔍 Search Input usando FormInput */}
-      <FormInput
-        id="datatable-search"
-        label="Search"
-        value={search}
-        placeholder="Search..."
-        onChange={(value) => {
-          setSearch(value)
-          setCurrentPage(1) // Reinicia a la primera página al buscar
-        }}
-      />
+    <div className={`datatable-wrapper ${compact ? 'datatable--compact' : ''} ${className}`}>
+      
+    {showSearch && (
+        <FormInput
+          id="datatable-search"
+          label="Search"
+          value={search}
+          placeholder="Search..."
+          onChange={(value) => { setSearch(value); setCurrentPage(1); }}
+        />
+      )}
 
-      {/* 📊 Tabla */}
       <table className="datatable">
         <thead>
           <tr>
             {columns.map((col) => (
               <th
-                key={String(col.key)}
+                key={col.id ?? String(col.key)}
                 onClick={() => handleSort(col.key)}
                 className={
                   sortKey === col.key
@@ -102,7 +110,7 @@ export default function DataTable<T>({
           {paginatedData.map((row, idx) => (
             <tr key={idx}>
               {columns.map((col) => (
-                <td key={String(col.key)}>
+                <td key={col.id ?? String(col.key)}>
                   {col.render
                     ? col.render(row[col.key], row)
                     : String(row[col.key])}
@@ -113,12 +121,13 @@ export default function DataTable<T>({
         </tbody>
       </table>
 
-      {/* 📌 Paginación */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+      {showPagination && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   )
 }

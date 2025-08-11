@@ -11,12 +11,16 @@ import { AppDispatch, RootState } from '@/features'
 import { addInvoiceThunk } from '@/features/thunks/financeThunks'
 import { useSelector } from 'react-redux'
 import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal'
+import FormSelect from '@/components/ui/FormSelect'
+import { invoiceStatusOptions } from '@/utils/invoiceStatus'
+
 
 export default function InvoicesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showAllColumns, setShowAllColumns] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
+  const [rowStatus, setRowStatus] = useState<Record<string, Invoice['status']>>({})
 
   const { invoices, loading, error } = useSelector(
     (state: RootState) => state.finance,
@@ -25,7 +29,7 @@ export default function InvoicesPage() {
   const dispatch = useDispatch<AppDispatch>()
 
   const allColumns: Column<Invoice & { actions: string }>[] = [
-    { key: 'id', label: 'ID' },
+    //{ key: 'id', label: 'ID' },
     { key: 'clientName', label: 'Client' },
     { key: 'clientEmail', label: 'Email' },
     {
@@ -50,27 +54,45 @@ export default function InvoicesPage() {
       render: (value) => `$${(value as number).toFixed(2)}`,
     },
     {
+      id: 'statusBadge',
       key: 'status',
       label: 'Status',
-      render: (value) => (
-        <span className={`status status--${(value as string).toLowerCase()}`}>
-          {value as string}
+      render: (_, row) => {
+        const id = row.id ?? ''
+        const current = rowStatus[id] ?? row.status
+
+        return <span className={`status status--${current.toLowerCase()}`}>
+          {current as string}
         </span>
-      ),
+      },
     },
     {
+      id: 'actions',
       key: 'actions',
       label: 'Actions',
-      render: (_, row) => (
-        <GenericButton
-          label="Detail"
-          variant="secondary"
-          onClick={() => {
-            setSelectedInvoice(row)
-            setShowDetailModal(true)
-          }}
-        />
-      ),
+      render: (_, row) => {
+        const id = row.id ?? ''
+        const current = rowStatus[id] ?? row.status
+
+        return <div className='actions-datatable'>
+          <GenericButton
+            label="Detail"
+            variant="secondary"
+            onClick={() => {
+              setSelectedInvoice(row)
+              setShowDetailModal(true)
+            }}
+          />
+          <FormSelect
+            id={`status-${id}`} 
+            value={current}
+            options={invoiceStatusOptions}
+            onChange={(value) =>
+              setRowStatus((prev) => ({ ...prev, [id]: value }))
+            }
+          />
+        </div>
+      },
     },
   ]
 

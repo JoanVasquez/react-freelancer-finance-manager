@@ -1,90 +1,90 @@
-import Modal from '@/components/ui/Modal'
 import { Invoice } from '@/models/Invoice'
-import GenericButton from '@/components/ui/GenericButton'
+import Modal from '../ui/Modal'
+import DataTable, { Column } from '../ui/DataTable'
 
-type InvoiceDetailModalProps = {
+interface Props {
+  invoice: Invoice | null
   isOpen: boolean
   onClose: () => void
-  invoice: Invoice | null
 }
 
-export default function InvoiceDetailModal({
-  isOpen,
-  onClose,
-  invoice,
-}: InvoiceDetailModalProps) {
+export default function InvoiceDetailModal({ invoice, isOpen, onClose }: Props) {
   if (!isOpen || !invoice) return null
 
+  const items = invoice.items ?? []
+  const subtotal = items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0)
+  const rate = invoice.taxRate ?? 0
+  const taxAmount = subtotal * rate
+  const total = subtotal + taxAmount
+
+  const itemColumns: Column<Invoice['items'][number]>[] = [
+  { id: 'desc',  key: 'description', label: 'Description', sortable: false },
+  { id: 'qty',   key: 'quantity',    label: 'Qty' },
+  {
+    id: 'price',
+    key: 'unitPrice',
+    label: 'Price',
+    render: (value) => `$${(value as number).toFixed(2)}`,
+  },
+  {
+    id: 'total',
+    key: 'unitPrice',
+    label: 'Total',
+    sortable: false,
+    render: (_, row) => `$${(row.quantity * row.unitPrice).toFixed(2)}`,
+  },
+]
+
   return (
-    <Modal title={`Invoice Details - ${invoice.id}`} onClose={onClose}>
+    <Modal title={`Invoice Details`} style={{
+      width: "100px"
+    }} onClose={onClose}>
       <div className="invoice-detail">
-        <section className="invoice-detail__section">
-          <h3>Client Info</h3>
-          <p>
-            <strong>Name:</strong> {invoice.clientName}
-          </p>
-          <p>
-            <strong>Email:</strong> {invoice.clientEmail}
-          </p>
-        </section>
+        <p className="invoice-detail__id">#{invoice.id}</p>
 
-        <section className="invoice-detail__section">
-          <h3>Invoice Info</h3>
-          <p>
-            <strong>Date Issued:</strong> {invoice.dateIssued}
-          </p>
-          <p>
-            <strong>Due Date:</strong> {invoice.dueDate || '—'}
-          </p>
-          <p>
-            <strong>Status:</strong>{' '}
-            <span className={`badge badge--${invoice.status.toLowerCase()}`}>
-              {invoice.status}
-            </span>
-          </p>
-          <p>
-            <strong>Tax Rate:</strong>{' '}
-            {invoice.taxRate ? `${(invoice.taxRate * 100).toFixed(0)}%` : '—'}
-          </p>
-        </section>
+        <div className="invoice-detail__section-grid">
+          <div className="invoice-detail__card">
+            <h4>Client Info</h4>
+            <p><strong>Name:</strong> {invoice.clientName}</p>
+            <p><strong>Email:</strong> {invoice.clientEmail}</p>
+          </div>
 
-        <section className="invoice-detail__section">
-          <h3>Items</h3>
-          {invoice.items.length === 0 ? (
-            <p>No items</p>
-          ) : (
-            <table className="invoice-detail__table">
-              <thead>
-                <tr>
-                  <th>Description</th>
-                  <th>Quantity</th>
-                  <th>Unit Price</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoice.items.map((item, idx) => (
-                  <tr key={idx}>
-                    <td>{item.description}</td>
-                    <td>{item.quantity}</td>
-                    <td>${item.unitPrice.toFixed(2)}</td>
-                    <td>${(item.quantity * item.unitPrice).toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
+          <div className="invoice-detail__card">
+            <h4>Invoice Info</h4>
+            <p><strong>Date Issued:</strong> {invoice.dateIssued}</p>
+            <p><strong>Due Date:</strong> {invoice.dueDate || '—'}</p>
+            <p>
+              <strong>Status:</strong>{' '}
+              <span className={`badge badge--${invoice.status.toLowerCase()}`}>
+                {invoice.status}
+              </span>
+            </p>
+            <p><strong>Tax Rate:</strong> {(rate * 100).toFixed(0)}%</p>
+          </div>
+        </div>
 
-        <section className="invoice-detail__section invoice-detail__total">
-          <h3>Total:</h3>
-          <p>${invoice.total.toFixed(2)}</p>
-        </section>
+        <div className="invoice-detail__section">
+          <h4>Items</h4>
+          <DataTable
+            columns={itemColumns}
+            data={items}
+            showSearch={false}
+            showPagination={false}
+            compact
+            className="invoice-detail__datatable"
+          />
+        </div>
+
+        <div className="invoice-detail__total">
+          <h4>Total:</h4>
+          <p>${total.toFixed(2)}</p>
+        </div>
 
         <div className="invoice-detail__actions">
-          <GenericButton label="Close" onClick={onClose} />
+          <button className="btn btn-primary" onClick={onClose}>Close</button>
         </div>
       </div>
     </Modal>
   )
 }
+

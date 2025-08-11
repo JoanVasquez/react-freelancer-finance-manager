@@ -1,3 +1,4 @@
+
 .invoice-detail {
   display: flex;
   flex-direction: column;
@@ -46,5 +47,23 @@
     display: flex;
     justify-content: flex-end;
   }
+}
+
+.invoice-detail__datatable {
+  max-width: 100%;
+  overflow-x: auto; // horizontal scroll if needed
+}
+
+.invoice-detail .datatable {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.invoice-detail .datatable th {
+  background: #f9fafb;
+}
+
+.invoice-detail .datatable tr:hover {
+  background: transparent; // calmer inside modal
 }
 
