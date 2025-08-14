@@ -4,10 +4,11 @@ import GenericService from './GenericService'
 import { AppError } from '@/lib/errorHandler'
 import { generateFakeJWT } from '@/lib/fakeJwt'
 import { UserRegistration } from '@/types/signup'
+import { user_data } from '@/utils/tmp_data'
 
 export default class UserService extends GenericService<User> {
   constructor() {
-    super([])
+    super(user_data)
   }
 
   login(email: string, password: string): UserWithoutPassword | null {

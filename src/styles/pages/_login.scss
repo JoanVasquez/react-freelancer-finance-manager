@@ -29,10 +29,6 @@
       height: 16px;
       cursor: pointer;
       transition: transform 0.15s ease;
-
-      &:hover {
-        transform: scale(1.05);
-      }
     }
   }
 
@@ -49,15 +45,6 @@
     cursor: pointer;
     box-shadow: v.$shadow-md;
     transition: background-color 0.2s ease, transform 0.1s ease;
-
-    &:hover:not(:disabled) {
-      background-color: v.$color-primary-dark;
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
 
     &:disabled {
       background-color: v.$color-gray-300;

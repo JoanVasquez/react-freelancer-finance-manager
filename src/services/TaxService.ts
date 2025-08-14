@@ -1,10 +1,11 @@
 import { TaxSummary } from '@/models'
 import GenericService from './GenericService'
 import { AppError } from '@/lib/errorHandler'
+import { tax_summary_data } from '@/utils/tmp_data'
 
 export default class TaxService extends GenericService<TaxSummary> {
   constructor() {
-    super([])
+    super(tax_summary_data)
   }
 
   calculateTax(year: number, income: number, expenses: number): TaxSummary {

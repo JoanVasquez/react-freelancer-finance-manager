@@ -10,12 +10,33 @@ const invoiceService = new InvoiceService()
 const expenseService = new ExpenseService()
 const incomeService = new IncomeService()
 
+export const getInvoicesThunk = createAsyncThunk(
+  'finance/getInvoices',
+  async (_, { rejectWithValue }) => {
+    try {
+      return invoiceService.getAll()
+    } catch (err) {
+      rejectWithValue(handleError(err))
+    }
+  },
+)
+
 export const addInvoiceThunk = createAsyncThunk(
   'finance/addInvoice',
   async (invoice: Invoice, { rejectWithValue }) => {
     try {
-      invoiceService.create(invoice)
-      return invoiceService.getAll()
+      return invoiceService.create(invoice)
+    } catch (err) {
+      rejectWithValue(handleError(err))
+    }
+  },
+)
+
+export const updateInvoiceThunk = createAsyncThunk(
+  'finance/updateInvoice',
+  async (invoice: Invoice, { rejectWithValue }) => {
+    try {
+      return invoiceService.update(invoice.id!, invoice)
     } catch (err) {
       rejectWithValue(handleError(err))
     }
@@ -26,8 +47,7 @@ export const removeInvoiceThunk = createAsyncThunk(
   'finance/removeInvoice',
   async (id: string, { rejectWithValue }) => {
     try {
-      invoiceService.delete(id)
-      return invoiceService.getAll()
+      return invoiceService.remove(id)
     } catch (err) {
       rejectWithValue(handleError(err))
     }
@@ -50,7 +70,7 @@ export const removeExpenseThunk = createAsyncThunk(
   'finance/removeExpense',
   async (id: string, { rejectWithValue }) => {
     try {
-      expenseService.delete(id)
+      expenseService.remove(id)
       return expenseService.getAll()
     } catch (err) {
       rejectWithValue(handleError(err))
@@ -74,7 +94,7 @@ export const removeIncomeThunk = createAsyncThunk(
   'finance/removeIncome',
   async (id: string, { rejectWithValue }) => {
     try {
-      incomeService.delete(id)
+      incomeService.remove(id)
       return incomeService.getAll()
     } catch (err) {
       rejectWithValue(handleError(err))

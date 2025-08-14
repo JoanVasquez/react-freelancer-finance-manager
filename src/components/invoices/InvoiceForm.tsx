@@ -29,7 +29,6 @@ export default function InvoiceForm({ onClose, onSave }: InvoiceFormProps) {
     Partial<Record<keyof typeof formData, string>>
   >({})
 
-  // ✅ Schema Step 1 (sin items todavía)
   const schemaStep1: ValidationSchema<typeof formData> = {
     clientName: { required: true },
     clientEmail: {
@@ -101,7 +100,6 @@ export default function InvoiceForm({ onClose, onSave }: InvoiceFormProps) {
     onSave(newInvoice)
   }
 
-  // 🛠 Helper para actualizar campo y limpiar error
   const updateField = <K extends keyof typeof formData>(
     field: K,
     value: (typeof formData)[K],

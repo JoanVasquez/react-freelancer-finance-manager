@@ -1,19 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { mockInvoices } from '@/mocks/invoices'
-import { Invoice } from '@/models/Invoice'
-import DataTable, { Column } from '@/components/ui/DataTable'
-import CreateInvoiceModal from '@/components/invoices/CreateInvoiceModal'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import DataTable from '@/components/ui/DataTable'
 import GenericButton from '@/components/ui/GenericButton'
-import { useDispatch } from 'react-redux'
-import { AppDispatch, RootState } from '@/features'
-import { addInvoiceThunk } from '@/features/thunks/financeThunks'
-import { useSelector } from 'react-redux'
+import CreateInvoiceModal from '@/components/invoices/CreateInvoiceModal'
 import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal'
-import FormSelect from '@/components/ui/FormSelect'
-import { invoiceStatusOptions } from '@/utils/invoiceStatus'
+import { AppDispatch, RootState } from '@/features'
+import { addInvoiceThunk, getInvoicesThunk, updateInvoiceThunk } from '@/features/thunks/financeThunks'
+import { Invoice } from '@/models/Invoice'
+import { makeInvoiceColumns } from '@/utils/invoice_columns' // <- fábrica de columnas con acciones
 
+
+const isInvoice = (x: unknown): x is Invoice => {
+  if (!x || typeof x !== 'object') return false
+  const o = x as Record<string, unknown>
+  return (
+    typeof o.clientName === 'string' &&
+    typeof o.clientEmail === 'string' &&
+    typeof o.dateIssued === 'string' &&
+    Array.isArray(o.items) &&
+    typeof o.status === 'string'
+  )
+}
 
 export default function InvoicesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -22,85 +31,65 @@ export default function InvoicesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [rowStatus, setRowStatus] = useState<Record<string, Invoice['status']>>({})
 
-  const { invoices, loading, error } = useSelector(
-    (state: RootState) => state.finance,
+  const dispatch = useDispatch<AppDispatch>()
+  const { invoices, loading, error } = useSelector((state: RootState) => state.finance)
+
+  useEffect(() => {
+    dispatch(getInvoicesThunk())
+  }, [dispatch])
+
+  const updateInvoice = useCallback(
+    (invoice: Invoice) => {
+      dispatch(updateInvoiceThunk(invoice))
+    },
+    [dispatch],
   )
 
-  const dispatch = useDispatch<AppDispatch>()
+  const onView = useCallback((row: Invoice) => {
+    setSelectedInvoice(row)
+    setShowDetailModal(true)
+  }, [])
 
-  const allColumns: Column<Invoice & { actions: string }>[] = [
-    //{ key: 'id', label: 'ID' },
-    { key: 'clientName', label: 'Client' },
-    { key: 'clientEmail', label: 'Email' },
-    {
-      key: 'dateIssued',
-      label: 'Issued',
-      render: (value) => value as string,
+  const onStatusChange = useCallback(
+    (row: Invoice, status: Invoice['status']) => {
+      const next = { ...row, status }
+      setRowStatus((prev) => ({ ...prev, [row.id ?? '']: status }))
+      updateInvoice(next)
     },
-    {
-      key: 'dueDate',
-      label: 'Due Date',
-      render: (value) => (value as string) || '—',
-    },
-    {
-      key: 'taxRate',
-      label: 'Tax',
-      render: (value) =>
-        value !== undefined ? `${((value as number) * 100).toFixed(0)}%` : '—',
-    },
-    {
-      key: 'total',
-      label: 'Amount',
-      render: (value) => `$${(value as number).toFixed(2)}`,
-    },
-    {
-      id: 'statusBadge',
-      key: 'status',
-      label: 'Status',
-      render: (_, row) => {
-        const id = row.id ?? ''
-        const current = rowStatus[id] ?? row.status
+    [updateInvoice],
+  )
 
-        return <span className={`status status--${current.toLowerCase()}`}>
-          {current as string}
-        </span>
-      },
-    },
-    {
-      id: 'actions',
-      key: 'actions',
-      label: 'Actions',
-      render: (_, row) => {
-        const id = row.id ?? ''
-        const current = rowStatus[id] ?? row.status
+  // Columnas con acciones inyectadas
+  const columns = useMemo(
+    () =>
+      makeInvoiceColumns({
+        onView,
+        onStatusChange,
+        rowStatus,
+      }),
+    [onView, onStatusChange, rowStatus],
+  )
 
-        return <div className='actions-datatable'>
-          <GenericButton
-            label="Detail"
-            variant="secondary"
-            onClick={() => {
-              setSelectedInvoice(row)
-              setShowDetailModal(true)
-            }}
-          />
-          <FormSelect
-            id={`status-${id}`} 
-            value={current}
-            options={invoiceStatusOptions}
-            onChange={(value) =>
-              setRowStatus((prev) => ({ ...prev, [id]: value }))
-            }
-          />
-        </div>
-      },
-    },
-  ]
-
-  const defaultColumns = allColumns.slice(0, 5)
+  // Versión compacta (primeras 5 columnas)
+  const defaultColumns = useMemo(() => columns.slice(0, 5), [columns])
 
   const handlerSubmit = async (invoice: Invoice) => {
     dispatch(addInvoiceThunk(invoice))
   }
+
+  const normalizedInvoices = useMemo(() => {
+    const out: Invoice[] = []
+    for (const item of (invoices as unknown[])) {
+      if (Array.isArray(item)) {
+        for (const inner of item) if (isInvoice(inner)) out.push(inner)
+      } else if (isInvoice(item)) {
+        out.push(item)
+      }
+    }
+    return out
+  }, [invoices])
+
+  console.log(invoices)
 
   return (
     <div className="invoices">
@@ -115,24 +104,36 @@ export default function InvoicesPage() {
 
       <p className="invoices__subtitle">Manage and track your invoices</p>
 
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px', display: 'flex', gap: 8 }}>
         <GenericButton
           label={showAllColumns ? 'Show Less Columns' : 'Show All Columns'}
           onClick={() => setShowAllColumns((prev) => !prev)}
         />
       </div>
 
+      {error && (
+        <div className="alert alert-error" role="alert" style={{ marginBottom: 12 }}>
+          {String(error)}
+        </div>
+      )}
+
       <div className="datatable-container">
-        <DataTable
-          columns={showAllColumns ? allColumns : defaultColumns}
-          data={[...invoices, ...mockInvoices]}
-        />
+        {loading ? (
+          <div style={{ padding: '1rem' }}>Loading invoices…</div>
+        ) : (
+          <DataTable
+            columns={showAllColumns ? columns : defaultColumns}
+            data={normalizedInvoices}
+            keyExtractor={(row, i) => row.id ?? `inv-${i}`}
+            itemsPerPage={10}
+          />
+        )}
       </div>
 
       <CreateInvoiceModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onCreate={(newInvoice: Invoice) => handlerSubmit(newInvoice)}
+        onCreate={handlerSubmit}
       />
 
       <InvoiceDetailModal

@@ -9,18 +9,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
   border: none;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: v.$shadow-sm;
-  }
-
-  &:active {
-    transform: translateY(0);
-    box-shadow: none;
-  }
 
   &--primary {
     background-color: v.$color-primary;

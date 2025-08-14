@@ -1,10 +1,11 @@
 import { Invoice, InvoiceItem } from '@/models'
 import GenericService from './GenericService'
 import { AppError } from '@/lib/errorHandler'
+import { invoice_data } from '@/utils/tmp_data'
 
 export default class InvoiceService extends GenericService<Invoice> {
   constructor() {
-    super([])
+    super(invoice_data)
   }
 
   getOverdueInvoices(): Invoice[] {
@@ -17,20 +18,6 @@ export default class InvoiceService extends GenericService<Invoice> {
       )
     } catch (err) {
       throw new AppError('Failed to get overdue invoices', 500, err)
-    }
-  }
-
-  calculateTotal(invoice: Invoice): number {
-    try {
-      const subtotal = invoice.items.reduce(
-        (sum: number, item: InvoiceItem) =>
-          sum + item.quantity * item.unitPrice,
-        0,
-      )
-      const tax = invoice.taxRate ? subtotal * (invoice.taxRate / 100) : 0
-      return subtotal + tax
-    } catch (err) {
-      throw new AppError('Failed to calculate total invoice', 500, err)
     }
   }
 }

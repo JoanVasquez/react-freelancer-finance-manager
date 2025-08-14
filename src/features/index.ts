@@ -14,6 +14,7 @@ import storage from 'redux-persist/lib/storage'
 import financeReducer from './slices/financeSlice'
 import taxReducer from './slices/taxSlice'
 import userReducer from './slices/userSlice'
+import paginationReducer from './slices/paginationSlice'
 
 const persistConfig = {
   key: 'root',
@@ -28,6 +29,7 @@ export const store = configureStore({
     finance: persistedFinance,
     tax: taxReducer,
     user: persistedUser,
+    pagination: paginationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

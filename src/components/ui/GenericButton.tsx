@@ -4,7 +4,7 @@ interface GenericButtonProps {
   label: string
   variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'theme'
   className?: string
-  onClick?: () => void
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   disabled?: boolean
 }
 

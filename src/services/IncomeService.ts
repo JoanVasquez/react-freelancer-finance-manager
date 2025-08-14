@@ -1,10 +1,11 @@
 import { AppError } from '@/lib/errorHandler'
 import { Income } from '@/models'
 import GenericService from './GenericService'
+import { income_data } from '@/utils/tmp_data'
 
 export default class IncomeService extends GenericService<Income> {
   constructor() {
-    super([])
+    super(income_data)
   }
 
   getTotalIncome(): number {

@@ -1,7 +1,8 @@
-// src/mocks/invoices.ts
-import { Invoice } from '@/models/Invoice'
+import { Expense, Income, Invoice, TaxSummary, User } from '@/models'
 
-export const mockInvoices: Invoice[] = [
+export const user_data: Array<User> = []
+export const tax_summary_data: Array<TaxSummary> = []
+export const invoice_data: Array<Invoice> = [
   {
     id: 'INV-001',
     clientName: 'Acme Corp',
@@ -134,4 +135,61 @@ export const mockInvoices: Invoice[] = [
     total: 2832,
     status: 'paid',
   },
+  {
+    id: 'INV-11',
+    clientName: 'Vega Health',
+    clientEmail: 'finance@vegahealth.com',
+    dateIssued: '2025-08-12',
+    dueDate: '2025-08-27',
+    items: [{ description: 'Wellness Program', quantity: 2, unitPrice: 1200 }],
+    taxRate: 0.18,
+    total: 2832,
+    status: 'paid',
+  },
+  {
+    id: 'INV-12',
+    clientName: 'Vega Health',
+    clientEmail: 'finance@vegahealth.com',
+    dateIssued: '2025-08-12',
+    dueDate: '2025-08-27',
+    items: [{ description: 'Wellness Program', quantity: 2, unitPrice: 1200 }],
+    taxRate: 0.18,
+    total: 2832,
+    status: 'paid',
+  },
+  {
+    id: 'INV-13',
+    clientName: 'Vega Health',
+    clientEmail: 'finance@vegahealth.com',
+    dateIssued: '2025-08-12',
+    dueDate: '2025-08-27',
+    items: [{ description: 'Wellness Program', quantity: 2, unitPrice: 1200 }],
+    taxRate: 0.18,
+    total: 2832,
+    status: 'paid',
+  },
+  {
+    id: 'INV-14',
+    clientName: 'Vega Health',
+    clientEmail: 'finance@vegahealth.com',
+    dateIssued: '2025-08-12',
+    dueDate: '2025-08-27',
+    items: [{ description: 'Wellness Program', quantity: 2, unitPrice: 1200 }],
+    taxRate: 0.18,
+    total: 2832,
+    status: 'paid',
+  },
+  {
+    id: 'INV-15',
+    clientName: 'Vega Health',
+    clientEmail: 'finance@vegahealth.com',
+    dateIssued: '2025-08-12',
+    dueDate: '2025-08-27',
+    items: [{ description: 'Wellness Program', quantity: 2, unitPrice: 1200 }],
+    taxRate: 0.18,
+    total: 2832,
+    status: 'paid',
+  },
 ]
+export const income_data: Array<Income> = []
+export const expense_data: Array<Expense> = []

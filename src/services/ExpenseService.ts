@@ -1,10 +1,11 @@
-import {AppError} from '@/lib/errorHandler'
-import {Expense} from '@/models'
+import { AppError } from '@/lib/errorHandler'
+import { Expense } from '@/models'
 import GenericService from './GenericService'
+import { expense_data } from '@/utils/tmp_data'
 
 export default class ExpenseService extends GenericService<Expense> {
   constructor() {
-    super([])
+    super(expense_data)
   }
 
   getExpensesByCategory(category: Expense['category']): Expense[] {
