@@ -7,10 +7,15 @@ import GenericButton from '@/components/ui/GenericButton'
 import CreateInvoiceModal from '@/components/invoices/CreateInvoiceModal'
 import InvoiceDetailModal from '@/components/invoices/InvoiceDetailModal'
 import { AppDispatch, RootState } from '@/features'
-import { addInvoiceThunk, getInvoicesThunk, updateInvoiceThunk } from '@/features/thunks/financeThunks'
+import {
+  addInvoiceThunk,
+  getInvoicesThunk,
+  getOverdueInvoicesThunk,
+  updateInvoiceThunk,
+} from '@/features/thunks/financeThunks'
 import { Invoice } from '@/models/Invoice'
 import { makeInvoiceColumns } from '@/utils/invoice_columns' // <- fábrica de columnas con acciones
-
+import { setInvoicesCurrentPage } from '@/features/slices/paginationSlice'
 
 const isInvoice = (x: unknown): x is Invoice => {
   if (!x || typeof x !== 'object') return false
@@ -29,14 +34,24 @@ export default function InvoicesPage() {
   const [showAllColumns, setShowAllColumns] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
-  const [rowStatus, setRowStatus] = useState<Record<string, Invoice['status']>>({})
+  const [rowStatus, setRowStatus] = useState<Record<string, Invoice['status']>>(
+    {},
+  )
+  const [showOverdue, setShowOverdue] = useState<boolean>(false)
 
   const dispatch = useDispatch<AppDispatch>()
-  const { invoices, loading, error } = useSelector((state: RootState) => state.finance)
+  const { invoices, loading, error } = useSelector(
+    (state: RootState) => state.finance,
+  )
 
   useEffect(() => {
-    dispatch(getInvoicesThunk())
-  }, [dispatch])
+    if (showOverdue) {
+      dispatch(getOverdueInvoicesThunk())
+    } else {
+      dispatch(getInvoicesThunk())
+    }
+    dispatch(setInvoicesCurrentPage(1))
+  }, [dispatch, showOverdue])
 
   const updateInvoice = useCallback(
     (invoice: Invoice) => {
@@ -55,11 +70,14 @@ export default function InvoicesPage() {
       const next = { ...row, status }
       setRowStatus((prev) => ({ ...prev, [row.id ?? '']: status }))
       updateInvoice(next)
+
+      if (status !== 'overdue') {
+        setShowOverdue(false)
+      }
     },
     [updateInvoice],
   )
 
-  // Columnas con acciones inyectadas
   const columns = useMemo(
     () =>
       makeInvoiceColumns({
@@ -70,7 +88,6 @@ export default function InvoicesPage() {
     [onView, onStatusChange, rowStatus],
   )
 
-  // Versión compacta (primeras 5 columnas)
   const defaultColumns = useMemo(() => columns.slice(0, 5), [columns])
 
   const handlerSubmit = async (invoice: Invoice) => {
@@ -79,7 +96,7 @@ export default function InvoicesPage() {
 
   const normalizedInvoices = useMemo(() => {
     const out: Invoice[] = []
-    for (const item of (invoices as unknown[])) {
+    for (const item of invoices as unknown[]) {
       if (Array.isArray(item)) {
         for (const inner of item) if (isInvoice(inner)) out.push(inner)
       } else if (isInvoice(item)) {
@@ -88,8 +105,6 @@ export default function InvoicesPage() {
     }
     return out
   }, [invoices])
-
-  console.log(invoices)
 
   return (
     <div className="invoices">
@@ -109,10 +124,19 @@ export default function InvoicesPage() {
           label={showAllColumns ? 'Show Less Columns' : 'Show All Columns'}
           onClick={() => setShowAllColumns((prev) => !prev)}
         />
+        <GenericButton
+          label={showOverdue ? 'Show all invoices' : 'Show overdue'}
+          variant="outline"
+          onClick={() => setShowOverdue((prev) => !prev)}
+        />
       </div>
 
       {error && (
-        <div className="alert alert-error" role="alert" style={{ marginBottom: 12 }}>
+        <div
+          className="alert alert-error"
+          role="alert"
+          style={{ marginBottom: 12 }}
+        >
           {String(error)}
         </div>
       )}

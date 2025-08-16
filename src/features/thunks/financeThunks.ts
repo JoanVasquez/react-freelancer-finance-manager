@@ -21,6 +21,17 @@ export const getInvoicesThunk = createAsyncThunk(
   },
 )
 
+export const getOverdueInvoicesThunk = createAsyncThunk(
+  'finance/getOverdueInvoices',
+  async (_, { rejectWithValue }) => {
+    try {
+      return invoiceService.getOverdueInvoices()
+    } catch (err) {
+      rejectWithValue(handleError(err))
+    }
+  },
+)
+
 export const addInvoiceThunk = createAsyncThunk(
   'finance/addInvoice',
   async (invoice: Invoice, { rejectWithValue }) => {

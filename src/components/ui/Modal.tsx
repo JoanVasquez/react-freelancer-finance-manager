@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import GenericButton from '@/components/ui/GenericButton'
 import '@/styles/components/_modal.scss'
 
@@ -15,6 +15,14 @@ export default function Modal({
   onClose,
   footer,
 }: ModalProps) {
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [])
+
   return (
     <div className="modal">
       <div className="modal__content">

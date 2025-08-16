@@ -22,7 +22,8 @@ export function validateInputs<T extends Record<string, unknown>>(
 
     // Required
     if (rules.required && (!value || String(value).trim() === '')) {
-      errors[String(key)] = `${String(key)} is required`
+      // errors[String(key)] = `${String(key)} is required`
+      errors[String(key)] = 'This field is required'
       valid = false
       return
     }
@@ -33,9 +34,11 @@ export function validateInputs<T extends Record<string, unknown>>(
       typeof value === 'string' &&
       value.length < rules.minLength
     ) {
-      errors[String(key)] = `${String(
-        key,
-      )} must be at least ${rules.minLength} characters`
+      // errors[String(key)] = `${String(
+      //   key,
+      // )} must be at least ${rules.minLength} characters`
+      errors[String(key)] =
+        `This field must be at least ${rules.minLength} characters`
       valid = false
     }
 

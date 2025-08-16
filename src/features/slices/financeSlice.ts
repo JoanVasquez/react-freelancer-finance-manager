@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, isAnyOf } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf } from '@reduxjs/toolkit'
 import {
   addInvoiceThunk,
   updateInvoiceThunk,
@@ -8,6 +8,7 @@ import {
   addIncomeThunk,
   removeIncomeThunk,
   getInvoicesThunk,
+  getOverdueInvoicesThunk,
 } from '../thunks/financeThunks'
 import { Invoice, Expense, Income } from '@/models'
 import { AppError } from '@/lib/errorHandler'
@@ -34,37 +35,29 @@ const financeSlice = createSlice({
   extraReducers: (builder) => {
     // ========== INVOICES ==========
     builder
-      .addCase(
-        getInvoicesThunk.fulfilled,
-        (state, action) => {
-          state.loading = false
-          state.invoices = action.payload as Invoice[]
-        },
-      )
-      .addCase(
-        addInvoiceThunk.fulfilled,
-        (state, action) => {
-          state.loading = false
-          state.invoices.push(action.payload as Invoice)
-        },
-      )
-      .addCase(
-        updateInvoiceThunk.fulfilled,
-        (state, action) => {
-          state.loading = false
-          const updated = action.payload as Invoice
-          const idx = state.invoices.findIndex((i) => i.id === updated.id)
-          if (idx !== -1) state.invoices[idx] = updated
-        },
-      )
-      .addCase(
-        removeInvoiceThunk.fulfilled,
-        (state, action) => {
-          state.loading = false
-          const id = action.payload as string
-          state.invoices = state.invoices.filter((i) => i.id !== id)
-        },
-      )
+      .addCase(getInvoicesThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.invoices = action.payload as Invoice[]
+      })
+      .addCase(addInvoiceThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.invoices.push(action.payload as Invoice)
+      })
+      .addCase(updateInvoiceThunk.fulfilled, (state, action) => {
+        state.loading = false
+        const updated = action.payload as Invoice
+        const idx = state.invoices.findIndex((i) => i.id === updated.id)
+        if (idx !== -1) state.invoices[idx] = updated
+      })
+      .addCase(removeInvoiceThunk.fulfilled, (state, action) => {
+        state.loading = false
+        const id = action.payload as string
+        state.invoices = state.invoices.filter((i) => i.id !== id)
+      })
+      .addCase(getOverdueInvoicesThunk.fulfilled, (state, action) => {
+        state.loading = false
+        state.invoices = action.payload as Invoice[]
+      })
 
     // // ========== EXPENSES ==========
     // builder
