@@ -38,7 +38,7 @@ export default function Sidebar() {
           variant="danger"
           className="w-full"
           onClick={() => {
-            dispatch(logoutThunk() as any)
+            dispatch(logoutThunk())
             router.push('/login')
           }}
         />

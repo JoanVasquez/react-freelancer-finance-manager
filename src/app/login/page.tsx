@@ -37,7 +37,7 @@ export default function LoginPage() {
       required: true,
       minLength: 6,
     },
-    rememberMe: {}, // No validation for checkbox
+    rememberMe: {},
   }
 
   const handleLogin = async () => {
