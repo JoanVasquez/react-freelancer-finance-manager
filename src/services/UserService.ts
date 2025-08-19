@@ -39,11 +39,15 @@ export default class UserService extends GenericService<User> {
         throw new AppError(`User with email ${user.email} already exits`, 500)
 
       const newUser = this.create({
+        id: crypto.randomUUID(),
         ...user,
         token: '',
         preferences: { theme: 'light', currency: 'USD' },
       })
-      const token = generateFakeJWT({ userId: user.id!, email: user.email })
+      const token = generateFakeJWT({
+        userId: newUser.id!,
+        email: newUser.email,
+      })
       newUser.token = token
 
       const userWithoutPassword: UserWithoutPassword = { ...newUser }

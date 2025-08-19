@@ -1,8 +1,11 @@
 export interface Expense {
   id?: string
-  description: string
+  date: string | Date
   amount: number
-  category: 'office' | 'travel' | 'software' | 'marketing' | 'other'
-  date: string
-  receiptUrl?: string
+  category?: string
+  taxable?: boolean
+  taxRate?: number
+  taxType?: 'VAT' | 'GST' | 'Sales' | 'Income' | 'Other'
+  jurisdiction?: string
+  taxStatus?: 'pending' | 'paid' | 'filed' | 'exempt'
 }

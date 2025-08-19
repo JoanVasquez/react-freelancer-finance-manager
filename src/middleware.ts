@@ -21,12 +21,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 🔹 Si es página de auth y hay token → ir al dashboard
   if (isAuthPage && token && validateFakeJWT(token)) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // 🔹 Si es página protegida → validar token
   if (isProtected) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))

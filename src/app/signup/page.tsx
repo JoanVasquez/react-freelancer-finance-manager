@@ -30,7 +30,6 @@ export default function SignupPage() {
     Partial<Record<keyof typeof formData, string>>
   >({})
 
-  // ✅ Tipado correcto del schema
   const schema: ValidationSchema<typeof formData> = {
     email: {
       required: true,
@@ -58,7 +57,6 @@ export default function SignupPage() {
     if (!valid) return
 
     const newUser: UserRegistration = {
-      id: crypto.randomUUID(),
       name: '', // Puedes añadir campo de nombre en el formulario si lo necesitas
       email: formData.email,
       password: formData.password,

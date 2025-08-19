@@ -10,10 +10,10 @@
 @use './components/form-input';
 @use './components/datatable';
 @use './components/formSelect';
+@use './components/smart-list.scss';
 
 @use './layout/auth-layout';
 @use './layout/sidebar';
 @use './layout/invoice-detail-modal';
 
 @use './pages/login';
-
