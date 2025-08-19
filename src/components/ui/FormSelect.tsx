@@ -1,6 +1,6 @@
 'use client'
 
-interface Option<T = string> {
+export interface FormSelectOption<T = string> {
   value: T
   label: string
 }
@@ -9,7 +9,7 @@ interface FormSelectProps<T = string> {
   id: string
   label: string
   value: T
-  options: Option<T>[]
+  options: FormSelectOption<T>[]
   onChange: (value: T) => void
   error?: string
 }

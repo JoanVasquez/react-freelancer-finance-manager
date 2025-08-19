@@ -78,7 +78,6 @@ export default function InvoiceForm({ onClose, onSave }: InvoiceFormProps) {
     setFormErrors(errors)
     if (!valid) return
 
-    // Calcular Due Date default
     let dueDateFinal = formData.dueDate
     if (!dueDateFinal && formData.dateIssued) {
       const issuedDate = new Date(formData.dateIssued)
