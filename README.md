@@ -119,7 +119,7 @@ A modern, responsive frontend application built with [Next.js](https://nextjs.or
 ```
 freelancer-finance-manager/
 ├── app/                    # Next.js App Router
-│   ├── (dashboard)/       # Main application pages
+│   ├── (protected)/       # Main application pages
 │   │   ├── dashboard/     # Dashboard page
 │   │   ├── income/        # Income management
 │   │   ├── expenses/      # Expense tracking
@@ -251,4 +251,4 @@ npm run export
 
 **A modern frontend solution for freelancer financial management**
 
-Built with ❤️ using Next.js and Tailwind CSS
+Built with ❤️ using Next.js and SCSS
