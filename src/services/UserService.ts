@@ -12,7 +12,6 @@ export default class UserService extends GenericService<User> {
   }
 
   login(email: string, password: string): UserWithoutPassword | null {
-    // Fake auth: just check if email exists in data
     try {
       const user = this.getAll().find((u) => u.email === email)
 
