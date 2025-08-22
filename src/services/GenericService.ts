@@ -1,23 +1,16 @@
-// src/services/GenericService.ts
+
 import { v4 as uuidv4 } from 'uuid'
 
-/**
- * Generic in-memory service with safe returns and stable shapes.
- * - Clona entradas/salidas para evitar mutaciones externas.
- * - Expone delete(id) para compatibilidad y remove(id) como alias.
- */
 export default abstract class GenericService<
   T extends { id?: string | number },
 > {
   protected data: T[]
 
   constructor(initialData: T[] = []) {
-    // evita compartir la referencia con quien pase el seed
     this.data = [...initialData]
   }
 
   getAll(): T[] {
-    // devuelve SIEMPRE una nueva copia
     return [...this.data]
   }
 
@@ -43,7 +36,6 @@ export default abstract class GenericService<
     return { ...merged }
   }
 
-  /** Preferred name */
   remove(id: string | number): string | number {
     const before = this.data.length
     this.data = this.data.filter((item) => item.id !== id)
