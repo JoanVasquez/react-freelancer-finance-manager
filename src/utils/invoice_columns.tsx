@@ -9,7 +9,6 @@ type Handlers = {
   rowStatus?: Record<string, Invoice['status']>
 }
 
-// Type guard to narrow a string to Invoice['status']
 const isInvoiceStatus = (v: string): v is Invoice['status'] =>
   v === 'draft' || v === 'sent' || v === 'paid' || v === 'overdue'
 
@@ -90,8 +89,8 @@ export const makeInvoiceColumns = ({
               <FormSelect
                 id={`status-${id}`}
                 label=""
-                value={current}                         // must match options.value
-                options={invoiceStatusOptions}          // values: draft/sent/paid/overdue
+                value={current}                        
+                options={invoiceStatusOptions}  
                 onChange={(value) => {
                   if (isInvoiceStatus(value)) onStatusChange(row, value)
                 }}
